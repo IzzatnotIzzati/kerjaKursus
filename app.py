@@ -1,6 +1,9 @@
-import time
+import time, sys, ctypes
 from decimal import Decimal, InvalidOperation
-import sys
+
+# Set console mode to allow ANSI escape sequences for cursor movement and screen clearing because bruh why
+kernel32 = ctypes.windll.kernel32
+kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 
 time.sleep(1) # titlescreen ahh
 
@@ -88,3 +91,50 @@ while True:
     else:
         hasDividends = False
         break
+
+# get user's interest rate/dividend (annual)
+if hasDividends:
+    while True:
+        appreciationRate = input("What is your annual interest rate/dividend percentage? (in %) \n")
+        sys.stdout.write('\033[F' + '\r' + appreciationRate + "% p.a.\n")  # Move up one line with \033[F then overwrite, didn't know it was this hard ngl, like ANSI codes are so weird
+        pretendLoading(1)
+        try:
+            # validate and convert to decimal
+            appreciationRateDecimal = Decimal(appreciationRate) / Decimal("100")  # convert percentage to decimal
+            if appreciationRateDecimal < Decimal("0"):
+                print("Enter a number greater than or equal to 0.")
+                continue
+            break
+        except InvalidOperation:
+            print("Enter a valid number! Not text!")
+            continue
+
+# see how many times it compounds annually
+if hasDividends:
+    while True:
+        compoundingFrequency = input("How many times does it compound annually? (e.g. 12 for monthly, 4 for quarterly, 1 for annually, 0 for no compounding) \n")
+        pretendLoading(1)
+        try:
+            # validate and convert to integer
+            compoundingFrequencyInt = int(compoundingFrequency)
+            if compoundingFrequencyInt <= 0:
+                print("Enter a number greater than 0.")
+                continue
+            break
+        except ValueError:
+            print("Enter a valid number! Not text!")
+            continue
+
+# calculate how long it will take to reach the goal
+
+#### doesnt have dividends
+
+
+
+
+
+# debug values
+print("Goal amount:", goalamtDecimal)
+print("Monthly savings:", incomeDecimal)
+print("Has dividends:", hasDividends)
+print("Interest/dividend rate:", appreciationRateDecimal if hasDividends else "N/A")
