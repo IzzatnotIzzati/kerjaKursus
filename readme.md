@@ -1,0 +1,1 @@
+# my ask homework lol its on github js bcs i want vcs but too lazy to use local git repo, vscode's intergration with github is so easy that im inclined to do that instead even though it's obviously unnecessary but whatever, builds my contribution graph thingy
