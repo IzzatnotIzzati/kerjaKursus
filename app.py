@@ -96,13 +96,13 @@ while True:
 if hasDividends:
     while True:
         appreciationRate = input("What is your annual interest rate/dividend percentage? (in %) \n")
-        sys.stdout.write('\033[F' + '\r' + appreciationRate + "% p.a.\n")  # Move up one line with \033[F then overwrite, didn't know it was this hard ngl, like ANSI codes are so weird
+        print('\033[F' + '\r' + appreciationRate + "% p.a.\n")  # Move up one line with \033[F then overwrite, didn't know it was this hard ngl, like ANSI codes are so weird
         pretendLoading(1)
         try:
             # validate and convert to decimal
             appreciationRateDecimal = Decimal(appreciationRate) / Decimal("100")  # convert percentage to decimal
-            if appreciationRateDecimal < Decimal("0"):
-                print("Enter a number greater than or equal to 0.")
+            if appreciationRateDecimal < Decimal("0") or appreciationRateDecimal == Decimal("0"):
+                print("Enter a number greater than 0.")
                 continue
             break
         except InvalidOperation:
@@ -112,7 +112,7 @@ if hasDividends:
 # see how many times it compounds annually
 if hasDividends:
     while True:
-        compoundingFrequency = input("How many times does it compound annually? (e.g. 12 for monthly, 4 for quarterly, 1 for annually, 0 for no compounding) \n")
+        compoundingFrequency = input("How many times does it compound annually? (e.g. 12 for monthly, 4 for quarterly, 1 for annually) \n")
         pretendLoading(1)
         try:
             # validate and convert to integer
