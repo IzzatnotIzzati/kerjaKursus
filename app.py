@@ -1,9 +1,13 @@
-import time, sys, ctypes
+import time, sys
 from decimal import Decimal, InvalidOperation
 
-# Set console mode to allow ANSI escape sequences for cursor movement and screen clearing because bruh why
-kernel32 = ctypes.windll.kernel32
-kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+# Set console mode to allow ANSI escape sequences on Windows because bruh why doesn't it work by default :(
+try: 
+    import ctypes
+    kernel32 = ctypes.windll.kernel32
+    kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
+except:
+    pass # run without crashing if it's not windows, prob should work out of the box on *nix
 
 time.sleep(1) # titlescreen ahh
 
