@@ -112,12 +112,12 @@ if hasDividends:
 # see how many times it compounds annually
 if hasDividends:
     while True:
-        compoundingFrequency = input("How many times does it compound annually? (e.g. 12 for monthly, 4 for quarterly, 1 for annually) \n")
+        compoundingFrequency = input("How many times does it compound annually? (e.g. 12 for monthly, 4 for quarterly, 1 for annually\n")
         pretendLoading(1)
         try:
             # validate and convert to integer
             compoundingFrequencyInt = int(compoundingFrequency)
-            if compoundingFrequencyInt <= 0:
+            if compoundingFrequencyInt < 0:
                 print("Enter a number greater than 0.")
                 continue
             break
@@ -129,12 +129,42 @@ if hasDividends:
 
 #### doesnt have dividends
 
+## formula is t = goalamt / income (result will be in months)
+
+if not hasDividends:
+    monthsToGoal = Decimal(goalamtDecimal) / Decimal(incomeDecimal)
+    yearsToGoal = Decimal(monthsToGoal) / Decimal("12")
+    monthsToGoalWithoutYear = monthsToGoal % Decimal(12)
+    pretendLoading(1)
+    
+    if monthsToGoal >= Decimal(12):
+        if monthsToGoalWithoutYear > Decimal(0):
+            if yearsToGoal == Decimal(1): # see if it's 1 year or more
+                print(f"It will take you about {yearsToGoal:.1f} year and {monthsToGoalWithoutYear:.1f} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+            else:
+                print(f"It will take you about {yearsToGoal:.1f} years and {monthsToGoalWithoutYear:.1f} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+        else:
+            if yearsToGoal == Decimal(1):
+                print(f"It will take you about {yearsToGoal:.1f} year to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+            else:
+                print(f"It will take you about {yearsToGoal:.1f} years to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+    else:
+        if monthsToGoal == Decimal(1):
+            print(f"It will take you about {monthsToGoal:.1f} month to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+        else:
+            print(f"It will take you about {monthsToGoal:.1f} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
 
 
-
+### has dividends, with compounding
 
 # debug values
-print("Goal amount:", goalamtDecimal)
-print("Monthly savings:", incomeDecimal)
-print("Has dividends:", hasDividends)
-print("Interest/dividend rate:", appreciationRateDecimal if hasDividends else "N/A")
+#print("Goal amount:", goalamtDecimal)
+#print("Monthly savings:", incomeDecimal)
+#print("Has dividends:", hasDividends)
+#print("Interest/dividend rate:", appreciationRateDecimal if hasDividends else "N/A")
+#print(yearsToGoal)
+#print(f"monthsToGoal: {monthsToGoal}")
+#print(f"monthsToGoal: {monthsToGoal}")
+#print(f"yearsToGoal: {yearsToGoal}")
+#print(f"monthsToGoalWithoutYear: {monthsToGoalWithoutYear}")
+
