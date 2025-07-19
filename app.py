@@ -1,5 +1,5 @@
 import time, sys
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal, InvalidOperation, getcontext
 
 # Set console mode to allow ANSI escape sequences on Windows because bruh why doesn't it work by default :(
 try: 
@@ -163,9 +163,30 @@ if not hasDividends:
     yearsToGoal = Decimal(monthsToGoal) / Decimal("12")
     monthsToGoalWithoutYear = monthsToGoal % Decimal(12)
     pretendLoading(1)
-    printTimeToGoal() # c'est tres jank et amusant, mdrrrrr :D
+    printTimeToGoal() # c'est tres jank et amusant, mdrrrrr mais je n'aime pas ca
     
 ### has dividends, with compounding
+
+if hasDividends:
+
+    getcontext().prec = 100 # ehh 100 is fine, actually too high but we're already using Decimal in everywhere so being slow AND using a software-based decimal library instead of floating point on hardware is negligible at this point
+    r = appreciationRateDecimal / Decimal(compoundingFrequencyInt) # monthly interest rate
+    numerator = ((goalamtDecimal * r) / incomeDecimal + Decimal(1)).ln()
+    denominator = (Decimal(1) + r).ln()
+    t = Decimal(numerator) / Decimal(denominator) # not monthly! follows compounding frequency, need to convert to months. apparently its in compounding periods.
+    t = t * Decimal(12) / Decimal(compoundingFrequencyInt) # t is converted to months here
+
+    monthsToGoal = t
+    yearsToGoal = Decimal(monthsToGoal) / Decimal("12")
+    monthsToGoalWithoutYear = monthsToGoal % Decimal(12)
+    pretendLoading(1)
+    printTimeToGoal()
+    
+    
+
+
+
+
 
 
 
