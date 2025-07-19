@@ -79,7 +79,6 @@ while True:
   except InvalidOperation:
       print("Enter a valid number! Not text!")
       continue # continue the loop if user gives iffy input
-  
 
 # see if user earns interest/dividends on their savings
 
@@ -129,6 +128,30 @@ if hasDividends:
             print("Enter a valid number! Not text!")
             continue
 
+# Output how muh time needed to reach goal
+monthsToGoal = None
+yearsToGoal = None
+monthsToGoalWithoutYear = None
+
+def printTimeToGoal():
+    """Procedure to print how long it'll take to reach the goal. Error alarms are blaring because of a variable issue and this is a very jank non-modular way of doing it but it works ig"""
+    if monthsToGoal >= Decimal(12):
+        if monthsToGoalWithoutYear > Decimal(0):
+            if yearsToGoal == Decimal(1): # see if it's 1 year or more
+                print(f"It will take you about {int(yearsToGoal)} year and {int(monthsToGoalWithoutYear)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+            else:
+                print(f"It will take you about {int(yearsToGoal)} years and {int(monthsToGoalWithoutYear)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+        else:
+            if yearsToGoal == Decimal(1):
+                print(f"It will take you about {int(yearsToGoal)} year to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+            else:
+                print(f"It will take you about {int(yearsToGoal)} years to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+    else:
+        if monthsToGoal == Decimal(1):
+            print(f"It will take you about {int(monthsToGoal)} month to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+        else:
+            print(f"It will take you about {int(monthsToGoal)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+
 # calculate how long it will take to reach the goal
 
 #### doesnt have dividends
@@ -140,26 +163,11 @@ if not hasDividends:
     yearsToGoal = Decimal(monthsToGoal) / Decimal("12")
     monthsToGoalWithoutYear = monthsToGoal % Decimal(12)
     pretendLoading(1)
+    printTimeToGoal() # c'est tres jank et amusant, mdrrrrr :D
     
-    if monthsToGoal >= Decimal(12):
-        if monthsToGoalWithoutYear > Decimal(0):
-            if yearsToGoal == Decimal(1): # see if it's 1 year or more
-                print(f"It will take you about {yearsToGoal:.1f} year and {monthsToGoalWithoutYear:.1f} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
-            else:
-                print(f"It will take you about {yearsToGoal:.1f} years and {monthsToGoalWithoutYear:.1f} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
-        else:
-            if yearsToGoal == Decimal(1):
-                print(f"It will take you about {yearsToGoal:.1f} year to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
-            else:
-                print(f"It will take you about {yearsToGoal:.1f} years to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
-    else:
-        if monthsToGoal == Decimal(1):
-            print(f"It will take you about {monthsToGoal:.1f} month to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
-        else:
-            print(f"It will take you about {monthsToGoal:.1f} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
-
-
 ### has dividends, with compounding
+
+
 
 # debug values
 #print("Goal amount:", goalamtDecimal)
