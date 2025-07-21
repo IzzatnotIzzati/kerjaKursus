@@ -2,37 +2,44 @@ import time, sys
 from decimal import Decimal, InvalidOperation, getcontext
 
 # Set console mode to allow ANSI escape sequences on Windows because bruh why doesn't it work by default :(
-try: 
+try:
     import ctypes
     kernel32 = ctypes.windll.kernel32
     kernel32.SetConsoleMode(kernel32.GetStdHandle(-11), 7)
 except:
-    pass # run without crashing if it's not windows, prob should work out of the box on *nix
+    pass  # run without crashing if it's not windows, prob should work out of the box on *nix
 
-time.sleep(1) # titlescreen ahh
+time.sleep(1)  # titlescreen ahh
+
 
 def clearScreen():
     """clear console screen"""
-    print("\x1b[2J\033[H", end='') # just because its fancy ig, idk
+    print("\x1b[2J\033[H", end='')  # just because its fancy ig, idk
+
 
 def pretendLoading(duration):
     """simulate loading by sleeping for a given time just to make it look like the program is thinking lol"""
-    
+
     spinner = ['|', '/', '-', '\\']
     start_time = time.time()
-    
+
     # loop until time runs out
     i = 0
     while time.time() - start_time < duration:
-        sys.stdout.write('\b' + spinner[i])  # \b moves cursor back one position
+        sys.stdout.write('\b' +
+                         spinner[i])  # \b moves cursor back one position
         sys.stdout.flush()
-        time.sleep(0.25) # adjust how fast the spinny thing spins so that the spinning looks nice ig
+        time.sleep(
+            0.25
+        )  # adjust how fast the spinny thing spins so that the spinning looks nice ig
         i = (i + 1) % len(spinner)
     sys.stdout.write('\b ')  # clear the spinner
     print()
 
 
-print("Calculator to calulate how much time you need to achieve your savings goal")
+print(
+    "Calculator to calulate how much time you need to achieve your savings goal"
+)
 
 pretendLoading(2)
 
@@ -60,30 +67,36 @@ while True:
 attemptAskingIncome = int(0)
 
 while True:
-  income = input("How much do you save per month? \n RM ")
-  attemptAskingIncome = int(attemptAskingIncome) + 1
-  pretendLoading(1)
-  if attemptAskingIncome > 2:
-    pretendLoading(2)
-    print("You can never reach your goal if you don't save money! Come back later when you pulled your life together! Exiting program...")
-    pretendLoading(0.5)
-    exit(0)  # ragequit asking
-  try:
-      # validate and convert to decimal
-      incomeDecimal = Decimal(income)
-      if incomeDecimal <= Decimal("0"):
-          print("Enter a number greater than 0. \nTip: You can't save if you don't put money aside or if you're bleeding money (unless you already earn enough in dividends to live off of)!")
-          continue
-      # break the loop if the response is what we expected
-      break
-  except InvalidOperation:
-      print("Enter a valid number! Not text!")
-      continue # continue the loop if user gives iffy input
+    income = input("How much do you save per month? \n RM ")
+    attemptAskingIncome = int(attemptAskingIncome) + 1
+    pretendLoading(1)
+    if attemptAskingIncome > 2:
+        pretendLoading(2)
+        print(
+            "You can never reach your goal if you don't save money! Come back later when you pulled your life together! Exiting program..."
+        )
+        pretendLoading(0.5)
+        exit(0)  # ragequit asking
+    try:
+        # validate and convert to decimal
+        incomeDecimal = Decimal(income)
+        if incomeDecimal <= Decimal("0"):
+            print(
+                "Enter a number greater than 0. \nTip: You can't save if you don't put money aside or if you're bleeding money (unless you already earn enough in dividends to live off of)!"
+            )
+            continue
+        # break the loop if the response is what we expected
+        break
+    except InvalidOperation:
+        print("Enter a valid number! Not text!")
+        continue  # continue the loop if user gives iffy input
 
 # see if user earns interest/dividends on their savings
 
 while True:
-    hasDividends = input("Do you invest or put your savings in a bank account that earns interest? (y/n) \n")
+    hasDividends = input(
+        "Do you invest or put your savings in a bank account that earns interest? (y/n) \n"
+    )
     pretendLoading(1)
     if hasDividends != "y" and hasDividends != "n":
         print("Please enter 'y' or 'n'.")
@@ -98,13 +111,18 @@ while True:
 # get user's interest rate/dividend (annual)
 if hasDividends:
     while True:
-        appreciationRate = input("What is your annual interest rate/dividend percentage? (in %) \n")
-        print('\033[F' + '\r' + appreciationRate + "% p.a.\n")  # Move up one line with \033[F then overwrite, didn't know it was this hard ngl, like ANSI codes are so weird
+        appreciationRate = input(
+            "What is your annual interest rate/dividend percentage? (in %) \n")
+        print(
+            '\033[F' + '\r' + appreciationRate + "% p.a.\n"
+        )  # Move up one line with \033[F then overwrite, didn't know it was this hard ngl, like ANSI codes are so weird
         pretendLoading(1)
         try:
             # validate and convert to decimal
-            appreciationRateDecimal = Decimal(appreciationRate) / Decimal("100")  # convert percentage to decimal
-            if appreciationRateDecimal < Decimal("0") or appreciationRateDecimal == Decimal("0"):
+            appreciationRateDecimal = Decimal(appreciationRate) / Decimal(
+                "100")  # convert percentage to decimal
+            if appreciationRateDecimal < Decimal(
+                    "0") or appreciationRateDecimal == Decimal("0"):
                 print("Enter a number greater than 0.")
                 continue
             break
@@ -115,7 +133,9 @@ if hasDividends:
 # see how many times it compounds annually
 if hasDividends:
     while True:
-        compoundingFrequency = input("How many times does it compound annually? (e.g. 12 for monthly, 4 for quarterly, 1 for annually\n")
+        compoundingFrequency = input(
+            "How many times does it compound annually? (e.g. 12 for monthly, 4 for quarterly, 1 for annually\n"
+        )
         pretendLoading(1)
         try:
             # validate and convert to integer
@@ -133,24 +153,38 @@ monthsToGoal = None
 yearsToGoal = None
 monthsToGoalWithoutYear = None
 
+
 def printTimeToGoal():
-    """Procedure to print how long it'll take to reach the goal. Error alarms are blaring because of a variable issue and this is a very jank non-modular way of doing it but it works ig"""
+    """Procedure to print how long it'll take to reach the goal in whole months and years. Error alarms are blaring because of a variable issue and this is a very jank non-modular way of doing it but it works ig"""
     if monthsToGoal >= Decimal(12):
         if monthsToGoalWithoutYear > Decimal(0):
-            if yearsToGoal == Decimal(1): # see if it's 1 year or more
-                print(f"It will take you about {int(yearsToGoal)} year and {int(monthsToGoalWithoutYear)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+            if yearsToGoal == Decimal(1):  # see if it's 1 year or more
+                print(
+                    f"It will take you about {int(yearsToGoal)} year and {int(monthsToGoalWithoutYear)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+                )
             else:
-                print(f"It will take you about {int(yearsToGoal)} years and {int(monthsToGoalWithoutYear)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+                print(
+                    f"It will take you about {int(yearsToGoal)} years and {int(monthsToGoalWithoutYear)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+                )
         else:
             if yearsToGoal == Decimal(1):
-                print(f"It will take you about {int(yearsToGoal)} year to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+                print(
+                    f"It will take you about {int(yearsToGoal)} year to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+                )
             else:
-                print(f"It will take you about {int(yearsToGoal)} years to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+                print(
+                    f"It will take you about {int(yearsToGoal)} years to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+                )
     else:
         if monthsToGoal == Decimal(1):
-            print(f"It will take you about {int(monthsToGoal)} month to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+            print(
+                f"It will take you about {int(monthsToGoal)} month to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+            )
         else:
-            print(f"It will take you about {int(monthsToGoal)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month.")
+            print(
+                f"It will take you about {int(monthsToGoal)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+            )
+
 
 # calculate how long it will take to reach the goal
 
@@ -159,36 +193,39 @@ def printTimeToGoal():
 ## formula is t = goalamt / income (result will be in months)
 
 if not hasDividends:
-    monthsToGoal = Decimal(goalamtDecimal) / Decimal(incomeDecimal)
-    yearsToGoal = Decimal(monthsToGoal) / Decimal("12")
-    monthsToGoalWithoutYear = monthsToGoal % Decimal(12)
+    monthsToGoal = (Decimal(goalamtDecimal) / Decimal(incomeDecimal)).quantize(
+        Decimal('0.1'))
+    yearsToGoal = int(monthsToGoal // Decimal("12"))
+    monthsToGoalWithoutYear = (monthsToGoal % Decimal(12)).quantize(
+        Decimal('0.1'))
     pretendLoading(1)
-    printTimeToGoal() # c'est tres jank et amusant, mdrrrrr mais je n'aime pas ca
-    
+    printTimeToGoal(
+    )  # c'est tres jank et amusant, mdrrrrr mais je n'aime pas ca
+
 ### has dividends, with compounding
+
+## formula is t = (ln(1 + (goalamt * r) / income)) / (ln(1 + r))
 
 if hasDividends:
 
-    getcontext().prec = 100 # ehh 100 is fine, actually too high but we're already using Decimal in everywhere so being slow AND using a software-based decimal library instead of floating point on hardware is negligible at this point
-    r = appreciationRateDecimal / Decimal(compoundingFrequencyInt) # monthly interest rate
+    getcontext(
+    ).prec = 100  # ehh 100 is fine, actually too high but we're already using Decimal in everywhere so being slow AND using a software-based decimal library instead of floating point on hardware is negligible at this point
+    r = appreciationRateDecimal / Decimal(
+        compoundingFrequencyInt)  # monthly interest rate
     numerator = ((goalamtDecimal * r) / incomeDecimal + Decimal(1)).ln()
     denominator = (Decimal(1) + r).ln()
-    t = Decimal(numerator) / Decimal(denominator) # not monthly! follows compounding frequency, need to convert to months. apparently its in compounding periods.
-    t = t * Decimal(12) / Decimal(compoundingFrequencyInt) # t is converted to months here
+    t = Decimal(numerator) / Decimal(
+        denominator
+    )  # not monthly! follows compounding frequency, need to convert to months. apparently its in compounding periods.
+    t = t * Decimal(12) / Decimal(
+        compoundingFrequencyInt)  # t is converted to months here
 
-    monthsToGoal = t
-    yearsToGoal = Decimal(monthsToGoal) / Decimal("12")
-    monthsToGoalWithoutYear = monthsToGoal % Decimal(12)
+    monthsToGoal = t.quantize(Decimal('0.1'))
+    yearsToGoal = int(monthsToGoal // Decimal("12"))
+    monthsToGoalWithoutYear = (monthsToGoal % Decimal(12)).quantize(
+        Decimal('0.1'))
     pretendLoading(1)
     printTimeToGoal()
-    
-    
-
-
-
-
-
-
 
 # debug values
 #print("Goal amount:", goalamtDecimal)
@@ -200,4 +237,3 @@ if hasDividends:
 #print(f"monthsToGoal: {monthsToGoal}")
 #print(f"yearsToGoal: {yearsToGoal}")
 #print(f"monthsToGoalWithoutYear: {monthsToGoalWithoutYear}")
-
