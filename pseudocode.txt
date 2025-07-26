@@ -1,0 +1,174 @@
+
+# pseudocode for printTimeToGoal
+MULA printTimeToGoal()
+    JIKA monthsToGoal >= 12
+        JIKA monthsToGoalWithoutYear > 0
+            JIKA yearsToGoal == 1
+                PAPAR "It will take you about {int(yearsToGoal)} year and {int(monthsToGoalWithoutYear)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+            JIKA TIDAK
+                PAPAR "It will take you about {int(yearsToGoal)} years and {int(monthsToGoalWithoutYear)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+            TAMAT JIKA
+        JIKA TIDAK
+            JIKA yearsToGoal == 1
+                PAPAR "It will take you about {int(yearsToGoal)} year to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+            JIKA TIDAK
+                PAPAR "It will take you about {int(yearsToGoal)} years to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+            TAMAT JIKA
+        TAMAT JIKA
+    JIKA TIDAK
+        JIKA monthsToGoal == 1
+            PAPAR "It will take you about {int(monthsToGoal)} month to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+        JIKA TIDAK
+            PAPAR "It will take you about {int(monthsToGoal)} months to reach your goal of RM {goalamtDecimal:.2f} by saving RM {incomeDecimal:.2f} per month."
+        TAMAT JIKA
+    TAMAT JIKA
+TAMAT
+
+# Pseudocode for app.py :(
+
+
+
+# Set console mode to allow ANSI escape sequences on Windows because bruh why doesn't it work by default :(
+CUBA
+    SET mod terminal kepada yang menyokong kod ANSI
+JIKA TERDAPAT RALAT
+    SAMBUNG
+TAMAT CUBA
+
+TUNGGU 1 saat
+
+PAPARKAN "Calculator to calulate how much time you need to achieve your savings goal"
+
+PANGGIL pretendLoading(2)
+
+PANGGIL clearScreen()
+
+while True
+    MASUKKAN goalamt
+    PANGGIL pretendLoading(1)
+    CUBA
+        SET goalamtDecimal = pemboleh ubah goalamt dalam bentuk Decimal
+        JIKA goalamtDecimal <= 0:
+            PAPARKAN "Enter a number greater than 0."
+            SAMBUNG
+        TAMAT JIKA
+        KELUAR DARI GELUNG
+    JIKA TERDAPAT RALAT InvalidOperation:
+        PAPAR "Enter a valid number! Not text!"
+        SAMBUNG
+    TAMAT CUBA
+
+# enter how much is saved per month
+
+SET attemptAskingIncome = 0
+
+while True
+    MASUKKAN income
+    SET attemptAskingIncome = attemptAskingIncome + 1
+    PANGGIL pretendLoading(1)
+    JIKA attemptAskingIncome > 2
+        PANGGIL pretendLoading(2)
+        PAPAR "You can never reach your goal if you don't save money! Come back later when you pulled your life together! Exiting program..."
+        PANGGIL pretendLoading(0.5)
+        HENTIKAN PROGRAM
+    TAMAT JIKA
+    CUBA
+        SET incomeDecimal = pemboleh ubah income dalam bentuk Decimal
+        JIKA incomeDecimal <= 0
+            PAPAR "Enter a number greater than 0. \nTip: You can't save if you don't put money aside or if you're bleeding money (unless you already earn enough in dividends to live off of)!"
+            SAMBUNG
+        TAMAT JIKA
+        KELUAR DARI GELUNG
+    JIKA terdapat ralat InvalidOperation
+        PAPAR "Enter a valid number! Not text!"
+        SAMBUNG
+    TAMAT CUBA
+
+# see if user earns interest/dividends on their savings
+
+while True
+    MASUKKAN hasDividends
+    PANGGIL pretendLoading(1)
+    JIKA hasDividends != "y" dan hasDividends != "n"
+        PAPAR "Please enter 'y' or 'n'."
+        SAMBUNG
+    LAIN JIKA hasDividends == "y"
+        SET hasDividends = True
+        KELUAR GELUNG
+    JIKA TIDAK
+        SET hasDividends = False
+        KELUAR GELUNG
+    TAMAT JIKA
+
+# get user's interest rate/dividend (annual)
+JIKA hasDividends
+    while True
+        MASUKKAN appreciationRate
+        CETAK '\033[F' + '\r' + appreciationRate + "% p.a.\n"
+        PANGGIL pretendLoading(1)
+        CUBA
+            # validate and convert to decimal
+            SET appreciationRateDecimal = appreciationRate / 100 dalam Decimal
+            JIKA appreciationRateDecimal < 0 atau appreciationRateDecimal == 0
+                PAPARKAN "Enter a number greater than 0."
+                SAMBUNG
+            KELUAR GELUNG
+            TAMAT JIKA
+        JIKA terdapat ralat InvalidOperation
+            PAPAR "Enter a valid number! Not text!"
+            SAMBUNG
+        TAMAT CUBA
+
+# see how many times it compounds annually
+JIKA hasDividends
+    while True
+        MASUKKAN compoundingFrequency
+        PANGGIL pretendLoading(1)
+        CUBA
+            # validate and convert to integer
+            SET compoundingFrequencyInt = compoundingFrequency dalam bentuk integer
+            JIKA compoundingFrequencyInt < 0
+                PAPARKAN "Enter a number greater than 0."
+                SAMBUNG
+            TAMAT JIKA
+            KELUAR GELUNG
+        JIKA terdapat ralat ValueError
+            PAPAR "Enter a valid number! Not text!"
+            SAMBUNG
+        TAMAT CUBA
+
+# Output how muh time needed to reach goal
+SET monthsToGoal = Nol
+SET yearsToGoal = Nol
+SET monthsToGoalWithoutYear = Nol
+
+# calculate how long it will take to reach the goal
+
+#### doesnt have dividends
+
+## formula is t = goalamt / income (result will be in months)
+
+JIKA TIDAK hasDividends
+    SET monthsToGoal = goalamtDecimal / incomeDecimal dan bundarkan
+    SET yearsToGoal = monthsToGoal BAHAGI TANPA BAKI 12
+    SET monthsToGoalWithoutYear = monthsToGoal MOD 12 dan bundarkan
+    PANGGIL pretendLoading(1)
+    PANGGIL printTimeToGoal()
+TAMAT JIKA
+
+### has dividends, with compounding
+
+## formula is t = (ln(1 + (goalamt * r) / income)) / (ln(1 + r))
+
+JIKA hasDividends
+    SET r = appreciationRateDecimal / compoundingFrequencyInt
+    SET numerator = ln((goalamtDecimal * r) / incomeDecimal + 1)
+    SET denominator = ln(1 + r)
+    SET t = numerator / denominator
+    SET t = t * 12 / compoundingFrequencyInt
+
+    SET monthsToGoal = pemboleh ubah t yang dibundar
+    SET yearsToGoal = monthsToGoal BAHAGI TANPA BAKI 12
+    SET monthsToGoalWithoutYear = (monthsToGoal % Decimal(12)) yang dibundar
+    PANGGIL pretendLoading(1)
+    PANGGIL printTimeToGoal()
