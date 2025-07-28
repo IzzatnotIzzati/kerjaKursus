@@ -37,7 +37,7 @@ TAMAT CUBA
 
 TUNGGU 1 saat
 
-PAPARKAN "Calculator to calulate how much time you need to achieve your savings goal"
+PAPARKAN "Calculator to calculate how much time you need to achieve your savings goal"
 
 PANGGIL pretendLoading(2)
 

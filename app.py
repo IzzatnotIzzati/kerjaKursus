@@ -38,7 +38,7 @@ def pretendLoading(duration):
 
 
 print(
-    "Calculator to calulate how much time you need to achieve your savings goal"
+    "Calculator to calculate how much time you need to achieve your savings goal"
 )
 
 pretendLoading(2)
